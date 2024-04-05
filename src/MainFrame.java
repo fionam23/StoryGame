@@ -2,15 +2,14 @@ import javax.swing.*;
 
 public class MainFrame extends JFrame implements Runnable{
     private Thread windowThread;
-    private GameRunner panel;
     public MainFrame(String display) {
         super(display);
-        int frameWidth = 300;
-        int frameHeight = 300;
+        int frameWidth = 500;
+        int frameHeight = 500;
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(frameWidth,frameHeight);
+        this.setSize(frameWidth, frameHeight);
+        this.setLocation(600, 100);
         this.setVisible(true);
-        panel = new GameRunner();
         startThread();
     }
     public void startThread(){
