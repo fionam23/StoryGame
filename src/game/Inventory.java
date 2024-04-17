@@ -1,9 +1,11 @@
+package game;
+
 import java.lang.reflect.Array;
 
 public class Inventory {
 
     Item[][] inventory = new Item[2][5];
-    public inventory(){
+    public Inventory(){
 
     }
 
