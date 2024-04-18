@@ -1,19 +1,19 @@
 
 
 import game.DialogueBox;
+import game.GamePanel;
 
 import javax.swing.*;
-import java.awt.*;
 
-public class MainFrame extends JFrame implements Runnable{
+public class MainWindow extends JFrame implements Runnable{
     private Thread windowThread;
-    private DialogueBox dialogueBox;
-    public MainFrame(String display) {
+    private GamePanel gamePanel;
+    public MainWindow(String display) {
         super(display);
         int frameWidth = 500;
         int frameHeight = 500;
-        dialogueBox = new DialogueBox("Hi there!");
-        this.add(dialogueBox);
+        gamePanel = new GamePanel();
+        add(gamePanel);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(frameWidth, frameHeight);
         this.setLocation(600, 100);
@@ -26,7 +26,7 @@ public class MainFrame extends JFrame implements Runnable{
     }
     public void run() {
         while (true) {
-            dialogueBox.repaint();
+            gamePanel.repaint();
         }
     }
 }

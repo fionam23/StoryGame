@@ -6,7 +6,12 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-public class GameRunner extends JPanel implements MouseListener, KeyListener {
+public class GamePanel extends JPanel implements MouseListener, KeyListener {
+    private DialogueBox currentDialogue;
+    public GamePanel(){
+        currentDialogue = new DialogueBox("Hi there!");
+        add(currentDialogue);
+    }
 
     @Override
     public void mouseClicked(MouseEvent e) {
@@ -40,11 +45,12 @@ public class GameRunner extends JPanel implements MouseListener, KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if(e.getKeyChar() == 'a' || e.getKeyCode() == KeyEvent.VK_LEFT){
 
+        if(e.getKeyChar() == 'a' || e.getKeyCode() == KeyEvent.VK_LEFT){
+            System.out.println("Key is left");
         }
         if(e.getKeyChar() == 'd' || e.getKeyCode() == KeyEvent.VK_RIGHT){
-
+            System.out.println("Key is right");
         }
     }
 
