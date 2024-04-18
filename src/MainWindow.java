@@ -8,12 +8,12 @@ import javax.swing.*;
 public class MainWindow extends JFrame implements Runnable{
     private Thread windowThread;
     private GamePanel gamePanel;
-    public MainWindow(String display) {
+    public MainWindow(String display, GamePanel panel) {
         super(display);
         int frameWidth = 500;
         int frameHeight = 500;
-        gamePanel = new GamePanel();
-        add(gamePanel);
+        gamePanel = panel;
+        add(panel);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(frameWidth, frameHeight);
         this.setLocation(600, 100);

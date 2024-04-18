@@ -1,9 +1,13 @@
+import game.Inventory;
+
 public class User {
     private int level;
     private boolean dead;
+    private Inventory inventory;
     public User(){
         level = 0;
         dead = false;
+        inventory = new Inventory();
     }
 
     public boolean isDead() {

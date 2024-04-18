@@ -21,7 +21,7 @@ public class DialogueBox extends JPanel implements MouseListener {
         label.setForeground(Color.white);
         this.add(label);
         this.addMouseListener(this);
-        button = new Rectangle(100, 100,100, 100);
+        button = new Rectangle(label.getX(), label.getY(),100, 100);
         this.setVisible(true);
         this.setLocation(100,100);
         setBounds(10, 10, 50, 20);

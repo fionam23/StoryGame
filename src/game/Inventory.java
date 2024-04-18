@@ -1,12 +1,13 @@
 package game;
 
+import java.awt.*;
 import java.lang.reflect.Array;
 
 public class Inventory {
 
     Item[][] inventory = new Item[2][5];
-    public Inventory(){
 
+    public Inventory(){
     }
 
     /**setItem()
@@ -26,4 +27,10 @@ public class Inventory {
         }
         return false;
     }
+
+    public Item[][] getInventory() {
+        return inventory;
+    }
+
+
 }
