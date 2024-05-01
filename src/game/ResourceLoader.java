@@ -39,7 +39,8 @@ public class ResourceLoader {
     }
 
     public static void loadAnimations(){
-
+        BufferedImage spriteAtlas = ImageIO.read(new File("resources/Sprites/charsprite.png"));
+        BufferedImage charWalk1 = spriteAtlas.getSubimage(0,0)
     }
     public static int[][]GetLevelData(){
 
