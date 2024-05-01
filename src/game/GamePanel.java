@@ -9,18 +9,21 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 public class GamePanel extends JPanel implements MouseListener, KeyListener {
     private DialogueBox currentDialogue;
 
     private InventoryGUI inventoryGUI;
+    private Gamestate gameState;
     private int xMove;
     private Point currentLocation;
 
     private LayoutManager layoutManager;
 
     private BufferedImage[] walkAni;
-    public GamePanel(Player plr){
+    public GamePanel(Player plr, Gamestate gamestate){
+        gameState = gamestate;
         currentDialogue = new DialogueBox("");
         inventoryGUI = new InventoryGUI(plr);
         inventoryGUI.openInventory();
@@ -44,10 +47,21 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.fillRect((int) currentLocation.getX(), 100, 10, 10);
-        if(inventoryGUI.isOpen()){
-            inventoryGUI.DrawInventory(g);
+        switch (gameState){
+            case INTRO -> {
+
+
+                try {
+                    g.drawImage(ResourceLoader.loadAnimations(),0, 0, null);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            case PLAYING -> {
+                g.fillRect((int) currentLocation.getX(), 100, 10, 10);
+            }
         }
+
 
     }
 

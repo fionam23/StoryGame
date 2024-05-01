@@ -7,15 +7,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.Buffer;
 
 public class ResourceLoader {
 
-    public static final
-    private BufferedImage[] curtainAni;
-
-    public ResourceLoader(){
-        loadAnimations();
-    }
+    private static BufferedImage[] walkAni;
     public static Font loadFont(){
         Font myFont;
         try{
@@ -38,15 +34,21 @@ public class ResourceLoader {
         return myImage;
     }
 
-    public static void loadAnimations(){
-        BufferedImage spriteAtlas = ImageIO.read(new File("resources/Sprites/charsprite.png"));
-        BufferedImage charWalk1 = spriteAtlas.getSubimage(0,0)
-    }
-    public static int[][]GetLevelData(){
+    public static void loadAnimations() throws IOException {
+        walkAni = new BufferedImage[3];
+        BufferedImage SpriteAtlas = ImageIO.read(new File("resources/Sprites/charsprite.png"));
 
+        BufferedImage walk1 = SpriteAtlas.getSubimage(0,0, 50, 170);
+        BufferedImage walk2 = SpriteAtlas.getSubimage(50, 0, 70, 170);
+        BufferedImage walk3 = SpriteAtlas.getSubimage(120, 0, 70, 170);
+        walkAni[0] = walk1;
+        walkAni[1] = walk2;
+        walkAni[2] = walk3;
+        return walk3;
     }
 
-    public BufferedImage[] getCurtainAni() {
-        return curtainAni;
+    public static BufferedImage[] getWalkAni() throws IOException {
+        loadAnimations();
+        return walkAni;
     }
 }

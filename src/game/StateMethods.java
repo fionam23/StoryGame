@@ -8,5 +8,4 @@ public interface StateMethods {
     public void mouseReleased(MouseEvent e);
     public void mouseMoved();
     public void keyPressed();
-    public void
 }

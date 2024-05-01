@@ -9,6 +9,8 @@ public class Game implements Runnable{
     private MainWindow window;
     private Player newPlayer;
 
+    private Gamestate gamestate;
+
     private final int FPS_SET = 120;
 
     public final static int DEFAULT_TILE_SIZE = 32;
@@ -19,7 +21,8 @@ public class Game implements Runnable{
 
     public Game(){
         newPlayer = new Player();
-        gamePanel = new GamePanel(newPlayer);
+        gamestate = Gamestate.INTRO;
+        gamePanel = new GamePanel(newPlayer, gamestate);
         window = new MainWindow("Escape or Die", gamePanel);
         startGame();
         gamePanel.requestFocus();
