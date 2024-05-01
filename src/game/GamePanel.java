@@ -1,32 +1,54 @@
 package game;
 
+import player.Player;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
 
 public class GamePanel extends JPanel implements MouseListener, KeyListener {
     private DialogueBox currentDialogue;
+
+    private InventoryGUI inventoryGUI;
     private int xMove;
     private Point currentLocation;
-    private boolean inventoryOpen;
 
-    public GamePanel(){
-        currentDialogue = new DialogueBox("Hi there!");
+    private LayoutManager layoutManager;
+
+    private BufferedImage[] walkAni;
+    public GamePanel(Player plr){
+        currentDialogue = new DialogueBox("");
+        inventoryGUI = new InventoryGUI(plr);
+        inventoryGUI.openInventory();
         addKeyListener(this);
+        addMouseListener(this);
+        setGamePanelSize();
         currentLocation = new Point(100,100);
+        add(inventoryGUI);
         add(currentDialogue);
 
     }
 
+    private void setGamePanelSize() {
+        Dimension size = new Dimension(1280, 800);
+        setMinimumSize(size);
+        setPreferredSize(size);
+        setMaximumSize(size);
+    }
 
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.fillRect((int) currentLocation.getX(), 100, 10, 10);
+        if(inventoryGUI.isOpen()){
+            inventoryGUI.DrawInventory(g);
+        }
+
     }
 
     //inputs
@@ -37,6 +59,11 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
+        if(inventoryGUI.isOpen()){
+            inventoryGUI.closeInventory();
+        } else {
+            inventoryGUI.openInventory();
+        }
 
     }
 
@@ -83,23 +110,24 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
     public void keyReleased(KeyEvent e) {
 
     }
-    public void openInventory(){
-        inventoryOpen = true;
-    }
-    public void closeInventory(){
-        inventoryOpen = false;
+
+    public DialogueBox getCurrentDialogue() {
+        return currentDialogue;
     }
 
-    public void DrawInventory(Graphics g, ){
-        int xLocation = 0;
-        int yLocation = 0;
-        for(int r = 0; r<inventory.length; r++){
-            for(int c = 0; c< inventory[r].length; c++){
-                xLocation+=40;
-                g.fillRect(xLocation, yLocation, 30, 30);
-            }
-            yLocation+=40;
-        }
+    public InventoryGUI getInventoryGUI() {
+        return inventoryGUI;
     }
 
+    public Point getCurrentLocation() {
+        return currentLocation;
+    }
+
+    public void setPanelSize(){
+
+    }
+
+    public void loadAnimations(){
+
+    }
 }

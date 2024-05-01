@@ -11,4 +11,16 @@ public class Item {
         this.Description = Description;
         this.icon = icon;
     }
+
+    public String getDescription() {
+        return Description;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public BufferedImage getIcon() {
+        return icon;
+    }
 }

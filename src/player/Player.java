@@ -1,10 +1,12 @@
+package player;
+
 import game.Inventory;
 
-public class User {
+public class Player {
     private int level;
     private boolean dead;
     private Inventory inventory;
-    public User(){
+    public Player(){
         level = 0;
         dead = false;
         inventory = new Inventory();
@@ -24,5 +26,9 @@ public class User {
 
     public void setDead(boolean dead) {
         this.dead = dead;
+    }
+
+    public Inventory getInventory() {
+        return inventory;
     }
 }

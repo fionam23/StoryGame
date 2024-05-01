@@ -1,4 +1,4 @@
-
+package game;
 
 import game.DialogueBox;
 import game.GamePanel;
@@ -17,6 +17,8 @@ public class MainWindow extends JFrame implements Runnable{
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(frameWidth, frameHeight);
         this.setLocation(600, 100);
+        this.pack();
+        this.setResizable(false);
         this.setVisible(true);
         startThread();
     }

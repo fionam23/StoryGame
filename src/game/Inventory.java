@@ -28,7 +28,7 @@ public class Inventory {
         return false;
     }
 
-    public Item[][] getInventory() {
+    public Item[][] getListInventory() {
         return inventory;
     }
 
