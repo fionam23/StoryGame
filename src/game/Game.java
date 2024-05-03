@@ -11,6 +11,10 @@ public class Game implements Runnable{
 
     private Gamestate gamestate;
 
+    private Intro intro;
+    private Playing playing;
+
+
     private final int FPS_SET = 120;
 
     public final static int DEFAULT_TILE_SIZE = 32;
@@ -21,9 +25,13 @@ public class Game implements Runnable{
 
     public Game(){
         newPlayer = new Player();
-        gamestate = Gamestate.INTRO;
-        gamePanel = new GamePanel(newPlayer, gamestate);
+        intro = new Intro(this);
+        gamePanel = new GamePanel(newPlayer, this);
+        playing = new Playing(this);
+        gamestate = Gamestate.PLAYING;
+
         window = new MainWindow("Escape or Die", gamePanel);
+
         startGame();
         gamePanel.requestFocus();
 
@@ -35,11 +43,36 @@ public class Game implements Runnable{
 
     @Override
     public void run() {
+        Event1(gamePanel.getCurrentDialogue());
     }
 
+    public Intro getIntro() {
+        return intro;
+    }
+
+    public Playing getPlaying() {
+        return playing;
+    }
+
+    public Gamestate getGamestate() {
+        return gamestate;
+    }
+
+    public GamePanel getGamePanel() {
+        return gamePanel;
+    }
     private void Event1(DialogueBox dialogueBox){
         dialogueBox.queueText("...");
         dialogueBox.queueText("'It's dark...'");
         dialogueBox.queueText("Struggle?");
+    }
+    public void switchStates(Gamestate state){
+        if(!(gamestate == state)){
+            gamePanel.removeAll();
+            gamestate = state;
+            switch(gamestate){
+                case PLAYING -> playing.start();
+            }
+        }
     }
 }

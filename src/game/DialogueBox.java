@@ -6,12 +6,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.font.FontRenderContext;
 import java.awt.font.LineBreakMeasurer;
+import java.awt.font.TextAttribute;
+import java.awt.font.TextLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.*;
+import java.text.AttributedCharacterIterator;
+import java.text.AttributedString;
 import java.util.ArrayList;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 public class DialogueBox extends JPanel implements MouseListener {
@@ -23,7 +29,6 @@ public class DialogueBox extends JPanel implements MouseListener {
     private Rectangle button;
     private boolean playing;
     public DialogueBox(String text){
-        propertyChangeSupport = new PropertyChangeSupport(this);
         label = new JTextArea();
         label.setEditable(false);
         label.setLineWrap(true);
@@ -49,6 +54,7 @@ public class DialogueBox extends JPanel implements MouseListener {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+
 
         label.setText(text);
         button = new Rectangle(label.getX()-20, label.getY(), label.getWidth()+40, label.getHeight());
@@ -90,22 +96,25 @@ public class DialogueBox extends JPanel implements MouseListener {
 
     }
     public void replaceText(String text) throws InterruptedException {
-        String oldText = this.text;
-
         for(int i = 0; i <=text.length();i++){
+            System.out.println("bro");
             TimeUnit.MILLISECONDS.sleep(100);
             this.setFont(ResourceLoader.loadFont());
 
             this.text = text.substring(0, i);
         }
-        propertyChangeSupport.firePropertyChange("textChange",oldText, text);
+        System.out.println(this.text);
     }
     public void loadText(String text){
         Thread loadText = new Thread(() -> {
+
             if(queuedText.size()>1){
+
                 if (!isPlaying()){
+
                     playing = true;
                     try {
+
                         replaceText(text);
                         queuedText.remove(0);
                     } catch (InterruptedException e) {
@@ -128,6 +137,10 @@ public class DialogueBox extends JPanel implements MouseListener {
         return text;
     }
 
+    public ArrayList<String> getQueuedText() {
+        return queuedText;
+    }
+
     public Rectangle getButton() {
         return button;
     }
@@ -137,5 +150,30 @@ public class DialogueBox extends JPanel implements MouseListener {
 
     public boolean isPlaying() {
         return playing;
+    }
+
+    public void drawText(Graphics2D g, String text){
+        text = "hi";
+        AttributedString attributedString = new AttributedString(text);
+        attributedString.addAttribute(TextAttribute.FONT, ResourceLoader.loadFont());
+        AttributedCharacterIterator paragraph = attributedString.getIterator();
+        int paragraphStart = paragraph.getBeginIndex();
+        int paragraphEnd = paragraph.getEndIndex();
+        FontRenderContext frc = g.getFontMetrics().getFontRenderContext();
+        LineBreakMeasurer lineMeasurer = new LineBreakMeasurer(paragraph, frc);
+
+        float breakWidth = (float) 100;
+        float drawPosY = 0;
+        lineMeasurer.setPosition(paragraphStart);
+        while (lineMeasurer.getPosition() < paragraphEnd) {
+            TextLayout layout = lineMeasurer.nextLayout(breakWidth);
+            float drawPosX = layout.isLeftToRight() ? 0 : breakWidth - layout.getAdvance();
+            drawPosY += layout.getAscent();
+            layout.draw(g, drawPosX, drawPosY);
+            drawPosY += layout.getDescent() + layout.getLeading();
+
+        }
+        repaint();
+
     }
 }

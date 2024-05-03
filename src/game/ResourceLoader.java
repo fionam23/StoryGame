@@ -16,7 +16,7 @@ public class ResourceLoader {
         Font myFont;
         try{
            myFont = Font.createFont(Font.TRUETYPE_FONT, new File("resources/Fonts/dogica.ttf"));
-           myFont = myFont.deriveFont(30.0F);
+           myFont = myFont.deriveFont(10.0F);
            return myFont;
         } catch (IOException | FontFormatException fileNotFound){
             System.out.println("Error loading file");
@@ -44,7 +44,6 @@ public class ResourceLoader {
         walkAni[0] = walk1;
         walkAni[1] = walk2;
         walkAni[2] = walk3;
-        return walk3;
     }
 
     public static BufferedImage[] getWalkAni() throws IOException {
