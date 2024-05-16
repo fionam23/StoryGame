@@ -1,18 +1,18 @@
 package game;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
-public class Intro implements StateMethods{
-    private static JLabel title;
+public class Menu implements StateMethods{
 
-    private Game game;
-    public Intro(Game game){
+    Game game;
+    Rectangle resumeButton;
+
+
+    public Menu(Game game){
         this.game = game;
-        title = new JLabel("Escape or die");
-        title.setFont(ResourceLoader.loadFont());
+        resumeButton = new Rectangle(80, 40);
     }
 
     @Override
@@ -21,21 +21,22 @@ public class Intro implements StateMethods{
     }
 
     public void draw(Graphics g){
+        g.setColor(Color.GRAY);
+        g.fillRect(resumeButton.x, resumeButton.y, resumeButton.width, resumeButton.height);
+    }
 
+    @Override
+    public void mousePressed(MouseEvent e) {
+        if(e.getButton() == 1){
+            if(resumeButton.contains(e.getPoint())){
+                game.switchStates(Gamestate.PLAYING);
+            }
+        }
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
 
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-        System.out.println("holidaly");
-        if(e.getButton() == 1){
-            System.out.println("clicked");
-            game.switchStates(Gamestate.PLAYING);
-        }
     }
 
     @Override
@@ -50,7 +51,9 @@ public class Intro implements StateMethods{
 
     @Override
     public void keyPressed(KeyEvent e) {
-
+        if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
+            game.switchStates(Gamestate.MENU);
+        }
     }
 
     @Override
@@ -67,4 +70,5 @@ public class Intro implements StateMethods{
     public void keyPressed() {
 
     }
+
 }

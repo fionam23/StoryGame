@@ -31,4 +31,5 @@ public class MainWindow extends JFrame implements Runnable{
             gamePanel.repaint();
         }
     }
+
 }

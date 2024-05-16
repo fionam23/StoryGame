@@ -12,6 +12,7 @@ import java.nio.Buffer;
 public class ResourceLoader {
 
     private static BufferedImage[] walkAni;
+    private static BufferedImage[] torchAni;
     public static Font loadFont(){
         Font myFont;
         try{
@@ -25,29 +26,59 @@ public class ResourceLoader {
         return null;
     }
     public static BufferedImage loadImage(String imageName){
-        BufferedImage myImage = null;
+        BufferedImage image = null;
         try {
-            myImage = ImageIO.read(new File("resources/Images/"+imageName));
+            image = ImageIO.read(new File("resources/Images/"+imageName));
         } catch (IOException e) {
             System.out.println("Image not found in resources.");
         }
-        return myImage;
+        return image;
     }
 
-    public static void loadAnimations() throws IOException {
-        walkAni = new BufferedImage[3];
-        BufferedImage SpriteAtlas = ImageIO.read(new File("resources/Sprites/charsprite.png"));
-
-        BufferedImage walk1 = SpriteAtlas.getSubimage(0,0, 50, 170);
-        BufferedImage walk2 = SpriteAtlas.getSubimage(50, 0, 70, 170);
-        BufferedImage walk3 = SpriteAtlas.getSubimage(120, 0, 70, 170);
-        walkAni[0] = walk1;
-        walkAni[1] = walk2;
-        walkAni[2] = walk3;
+    public static BufferedImage loadMap(String mapName){
+        BufferedImage map = null;
+        try {
+            map = ImageIO.read(new File("resources/Map/"+mapName));
+        } catch (IOException e) {
+            System.out.println("Map not found in resources.");
+        }
+        return map;
     }
 
-    public static BufferedImage[] getWalkAni() throws IOException {
+    public static void loadAnimations(){
+        walkAni = new BufferedImage[4];
+        torchAni = new BufferedImage[2];
+        BufferedImage SpriteAtlas = null;
+        try {
+            SpriteAtlas = ImageIO.read(new File("resources/Sprites/charsprite.png"));
+            BufferedImage walk1 = SpriteAtlas.getSubimage(0,0, 50, 170);
+            BufferedImage walk2 = SpriteAtlas.getSubimage(50, 0, 70, 170);
+            BufferedImage walk3 = SpriteAtlas.getSubimage(0, 0, 50, 170);
+            BufferedImage walk4 = SpriteAtlas.getSubimage(120, 0, 70, 170);
+            walkAni[0] = walk1;
+            walkAni[1] = walk2;
+            walkAni[2] = walk3;
+            walkAni[3] = walk4;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            SpriteAtlas = ImageIO.read(new File("resources/Sprites/torch.png"));
+            torchAni[0] = SpriteAtlas.getSubimage(0, 0, 8, 21);
+            torchAni[1] = SpriteAtlas.getSubimage(14, 0, 9, 21);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public static BufferedImage[] getWalkAni(){
         loadAnimations();
         return walkAni;
+    }
+    public static BufferedImage[] getTorchAni(){
+        loadAnimations();
+        return torchAni;
     }
 }

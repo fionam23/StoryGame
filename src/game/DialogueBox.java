@@ -22,45 +22,28 @@ import java.util.concurrent.TimeUnit;
 
 public class DialogueBox extends JPanel implements MouseListener {
     protected PropertyChangeSupport propertyChangeSupport;
+
+    private Game game;
     private JTextArea label;
     private Font font;
-    private String text;
+
+    private Point location;
+    private Dimension size;
+    private String text = "hi";
     private ArrayList<String> queuedText;
     private Rectangle button;
     private boolean playing;
-    public DialogueBox(String text){
-        label = new JTextArea();
-        label.setEditable(false);
-        label.setLineWrap(true);
-        label.setWrapStyleWord(true);
-        label.setSize(300,300);
-        label.setLocation(100, 12);
-        label.setFont(ResourceLoader.loadFont());
-        label.setText(text);
-        label.setBackground(Color.BLACK);
-        label.setForeground(Color.white);
-        label.addMouseListener(this);
+    public DialogueBox(String text, Game game){
+
+        this.game = game;
+        button = new Rectangle();
+
         queuedText = new ArrayList<>();
         queuedText.add(text);
-        playing = false;
-        this.add(label);
-        button = new Rectangle(label.getX()-20, label.getY(), label.getWidth()+40, label.getHeight());
         this.setVisible(true);
         this.setLocation(100,100);
         setBounds(10, 10, 50, 20);
         requestFocus();
-    }
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-
-
-        label.setText(text);
-        button = new Rectangle(label.getX()-20, label.getY(), label.getWidth()+40, label.getHeight());
-        g.setColor(Color.BLACK);
-        g.fillRect((int) button.getX(), (int) button.getY(), (int) button.getWidth(), (int) button.getHeight());
-
     }
 
     @Override
@@ -70,15 +53,7 @@ public class DialogueBox extends JPanel implements MouseListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
-        Point clicked = e.getPoint();
-        if(e.getButton() == 1){
-            if(button.contains(clicked)){
-                System.out.println("Clicked");
-                if(queuedText.size()>1){
-                    loadText(queuedText.get(1));
-                }
-            }
-        }
+
     }
 
     @Override
@@ -103,28 +78,34 @@ public class DialogueBox extends JPanel implements MouseListener {
 
             this.text = text.substring(0, i);
         }
-        System.out.println(this.text);
+        playing = false;
     }
-    public void loadText(String text){
+    public Thread loadText(String text){
         Thread loadText = new Thread(() -> {
+            synchronized (this){
+                if(queuedText.size()>1){
 
-            if(queuedText.size()>1){
+                    if (!isPlaying()){
 
-                if (!isPlaying()){
+                        playing = true;
+                        try {
 
-                    playing = true;
-                    try {
-
-                        replaceText(text);
-                        queuedText.remove(0);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
+                            replaceText(text);
+                            queuedText.remove(0);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                        playing = false;
                     }
-                    playing = false;
                 }
+                notify();
             }
-        });
+
+
+        }
+        );
         loadText.start();
+        return loadText;
     }
 
 
@@ -152,28 +133,47 @@ public class DialogueBox extends JPanel implements MouseListener {
         return playing;
     }
 
-    public void drawText(Graphics2D g, String text){
-        text = "hi";
-        AttributedString attributedString = new AttributedString(text);
-        attributedString.addAttribute(TextAttribute.FONT, ResourceLoader.loadFont());
-        AttributedCharacterIterator paragraph = attributedString.getIterator();
-        int paragraphStart = paragraph.getBeginIndex();
-        int paragraphEnd = paragraph.getEndIndex();
-        FontRenderContext frc = g.getFontMetrics().getFontRenderContext();
-        LineBreakMeasurer lineMeasurer = new LineBreakMeasurer(paragraph, frc);
+    public void draw(Graphics2D g){
+        g.setColor(Color.BLACK);
+        size = new Dimension(500, 200);
+        location = new Point(((game.getGamePanel().getWidth()-size.width)/2), game.getGamePanel().getHeight()-(size.height+10));
+        button.setLocation(location);
+        button.setSize(size);
+        ;
+        g.fillRect(location.x, location.y, size.width, size.height);
+        if(text.length()>0){
+            AttributedString attributedString = new AttributedString(text);
+            attributedString.addAttribute(TextAttribute.FONT, ResourceLoader.loadFont());
+            attributedString.addAttribute(TextAttribute.FOREGROUND, Color.WHITE);
+            AttributedCharacterIterator paragraph = attributedString.getIterator();
+            int paragraphStart = paragraph.getBeginIndex();
+            int paragraphEnd = paragraph.getEndIndex();
+            FontRenderContext frc = g.getFontMetrics().getFontRenderContext();
+            LineBreakMeasurer lineMeasurer = new LineBreakMeasurer(paragraph, frc);
 
-        float breakWidth = (float) 100;
-        float drawPosY = 0;
-        lineMeasurer.setPosition(paragraphStart);
-        while (lineMeasurer.getPosition() < paragraphEnd) {
-            TextLayout layout = lineMeasurer.nextLayout(breakWidth);
-            float drawPosX = layout.isLeftToRight() ? 0 : breakWidth - layout.getAdvance();
-            drawPosY += layout.getAscent();
-            layout.draw(g, drawPosX, drawPosY);
-            drawPosY += layout.getDescent() + layout.getLeading();
+            float breakWidth = (float) size.width;
+            float drawPosY = location.y+10;
+            lineMeasurer.setPosition(paragraphStart);
+            while (lineMeasurer.getPosition() < paragraphEnd) {
+                TextLayout layout = lineMeasurer.nextLayout(breakWidth);
+                float drawPosX = (layout.isLeftToRight() ? 0 : breakWidth - layout.getAdvance())+location.x;
+                drawPosY += layout.getAscent();
+                layout.draw(g, drawPosX, drawPosY);
+                drawPosY += layout.getDescent() + layout.getLeading();
+
+            }
+            repaint();
 
         }
-        repaint();
+        }
 
-    }
+        public void waitForDialogueEnd(){
+            while(queuedText.size()>1){
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
 }
